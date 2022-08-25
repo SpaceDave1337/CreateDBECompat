@@ -14,6 +14,9 @@ plugins {
 }
 
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 group = 'mod.spacedave.cdbe'
 version = '1.18.2-0.1'
@@ -47,6 +50,8 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
+            arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=flywheel.mixins.json'
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -72,6 +77,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            arg '-mixin.config=create.mixins.json'
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -141,6 +147,11 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+
+    maven {
+        name = 'tterrag maven'
+        url = 'https://maven.tterrag.com/'
+    }
 }
 
 dependencies {
@@ -162,6 +173,10 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:all") { transitive = false }
+    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    compileOnly fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
